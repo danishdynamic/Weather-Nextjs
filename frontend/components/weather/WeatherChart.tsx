@@ -1,59 +1,21 @@
 "use client";
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
-import {LineChart,Line,XAxis,YAxis,CartesianGrid,Tooltip,ResponsiveContainer} from "recharts";
-import { Box } from "@mui/material";
+export default function WeatherChart({ data }: { data: any[] }) {
+  if (!data || data.length === 0) {
+    return <div className="h-64 flex items-center justify-center bg-slate-900/50 rounded-2xl">Select a city to see forecast</div>;
+  }
 
-// Define the shape of the data for TypeScript
-interface WeatherChartProps {
-  data: {
-    time: string;
-    temp: number;
-  }[];
-}
-
-export default function WeatherChart({ data }: WeatherChartProps) {
   return (
-    <Box sx={{ width: "100%", height: 300, mt: 2 }}>
+    <div className="h-64 w-full bg-slate-900/50 p-4 rounded-2xl border border-slate-800">
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart
-          data={data}
-          margin={{ top: 5, right: 20, left: -20, bottom: 5 }}
-        >
-          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-          
-          <XAxis 
-            dataKey="time" 
-            axisLine={false} 
-            tickLine={false} 
-            tick={{ fontSize: 12, fill: "#666" }}
-          />
-          
-          <YAxis 
-            axisLine={false} 
-            tickLine={false} 
-            tick={{ fontSize: 12, fill: "#666" }}
-            unit="°"
-          />
-          
-          <Tooltip 
-            contentStyle={{ 
-              borderRadius: "8px", 
-              border: "none", 
-              boxShadow: "0px 4px 12px rgba(0,0,0,0.1)" 
-            }} 
-          />
-          
-          <Line
-            type="monotone"
-            dataKey="temp"
-            stroke="#1976d2" 
-            strokeWidth={3}
-            dot={{ r: 4, fill: "#1976d2" }}
-            activeDot={{ r: 6 }}
-            animationDuration={1000}
-          />
+        <LineChart data={data}>
+          <XAxis dataKey="time" stroke="#64748b" fontSize={10} />
+          <YAxis stroke="#64748b" fontSize={10} />
+          <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: 'none' }} />
+          <Line type="monotone" dataKey="temp" stroke="#3b82f6" strokeWidth={3} dot={false} />
         </LineChart>
       </ResponsiveContainer>
-    </Box>
+    </div>
   );
 }

@@ -1,78 +1,41 @@
 "use client";
+import { useState } from 'react';
+import api from '@/lib/api';
+import { useRouter } from 'next/navigation';
 
-import { useState } from "react";
-import { useRouter } from "next/navigation"; 
-import axios from "axios";
-import { saveToken } from "@/lib/auth";
-import { Box, Button, TextField, Typography, Paper, Container,Alert } from "@mui/material";
-
-export default function LoginPage() {
-  const [username, setUsername] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const router = useRouter(); 
+export default function Login() {
+  const [form, setForm] = useState({ username: '', password: '' });
+  const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault(); // Prevent page refresh
-    setError("");
-    setLoading(true);
-
+    e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:5000/login", {
-        username,
-      });
-
-      if (res.data.token) {
-        saveToken(res.data.token);
-        router.push("/dashboard"); 
-      }
-    } catch (err: any) {
-      console.error("Login failed", err);
-      setError(err.response?.data?.message || "Login failed. Ensure backend is running at port 5000.");
-    } finally {
-      setLoading(false);
+      const res = await api.post('/auth/login', form);
+      localStorage.setItem('token', res.data.token);
+      router.push('/dashboard');
+    } catch (err) {
+      alert("Invalid credentials");
     }
   };
 
   return (
-    <Container maxWidth="xs">
-      <Box sx={{ mt: 10, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <Paper elevation={3} sx={{ p: 4, width: '100%', borderRadius: 4 }}>
-            <Typography variant="h5" component="h1" gutterBottom align="center" fontWeight="bold">
-                Weather App Login
-            </Typography>
-          
-          <Typography variant="body2" color="textSecondary" align="center" sx={{ mb: 3 }}>
-            Enter your username to access the India Weather Dashboard
-          </Typography>
-
-          {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-
-          <Box component="form" onSubmit={handleLogin}>
-            <TextField
-              fullWidth
-              label="Username"
-              variant="outlined"
-              margin="normal"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-              disabled={loading}
-              autoFocus
-            />
-            <Button
-              fullWidth
-              type="submit"
-              variant="contained"
-              size="large"
-              disabled={loading}
-              sx={{ mt: 3, py: 1.5, borderRadius: 2, fontWeight: 'bold' }}
-            >
-              {loading ? "Authenticating..." : "Login"}
-            </Button>
-          </Box>
-        </Paper>
-      </Box>
-    </Container>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-slate-900 text-white">
+      <form onSubmit={handleLogin} className="bg-slate-800 p-8 rounded-lg shadow-xl w-96">
+        <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
+        <input 
+          type="text" placeholder="Username" 
+          className="w-full p-2 mb-4 rounded bg-slate-700 border border-slate-600"
+          onChange={(e) => setForm({...form, username: e.target.value})}
+        />
+        <input 
+          type="password" placeholder="Password" 
+          className="w-full p-2 mb-6 rounded bg-slate-700 border border-slate-600"
+          onChange={(e) => setForm({...form, password: e.target.value})}
+        />
+        <button type="submit" className="w-full bg-green-600 hover:bg-green-700 py-2 rounded font-semibold transition">
+          Login
+        </button>
+      </form>
+    </div>
   );
 }

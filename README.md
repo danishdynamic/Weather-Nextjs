@@ -1,6 +1,10 @@
 ## 🌦️ Weather Insights Dashboard
 A full-stack weather forecasting application built with Next.js 14, Node.js/Express, and Material UI. This app provides real-time weather statistics and 7-day forecasts using the Open-Meteo API, secured with JWT authentication.
 
+![alt text](image.png)
+
+![alt text](image-1.png)
+
 ---
 
 ### 🚀 Features

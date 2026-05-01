@@ -1,64 +1,39 @@
 "use client";
-
-import React, { useState } from "react";
-import { Box, TextField, Button } from "@mui/material";
-import { Search } from "lucide-react"; 
+import { Search, Plus } from 'lucide-react';
+import { useState } from 'react';
 
 interface SearchBarProps {
-  onSearch: (city: string) => void;
+  onAddCity: (city: string) => void;
 }
 
-export default function SearchBar({ onSearch }: SearchBarProps) {
-  const [city, setCity] = useState("");
+export default function SearchBar({ onAddCity }: SearchBarProps) {
+  const [input, setInput] = useState('');
 
-
-  const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === "Enter") {
-      onSearch(city);
-    }
+  const handleAction = () => {
+    if (!input.trim()) return;
+    onAddCity(input);
+    setInput('');
   };
 
   return (
-    <Box 
-      className="flex gap-2 bg-white p-4 rounded-2xl shadow-sm mb-6"
-      sx={{ 
-        display: 'flex', 
-        alignItems: 'center',
-        // Ensuring it looks good on mobile and desktop
-        flexDirection: { xs: 'column', sm: 'row' } 
-      }}
-    >
-      <TextField
-        fullWidth
-        size="small"
-        label="Search City in India..."
-        variant="outlined"
-        value={city}
-        onChange={(e) => setCity(e.target.value)}
-        onKeyDown={handleKeyDown}
-        sx={{
-          "& .MuiOutlinedInput-root": {
-            borderRadius: "12px",
-          },
-        }}
-      />
-      <Button 
-        variant="contained" 
-        onClick={() => onSearch(city)}
-        disabled={!city.trim()} // Disable if input is empty
-        startIcon={<Search size={18} />} // Optional icon
-        sx={{ 
-          borderRadius: '12px', 
-          px: 4,
-          py: 1,
-          textTransform: 'none', // Keeps "Search" from being all caps
-          fontWeight: 'bold',
-          minWidth: { sm: '120px' },
-          width: { xs: '100%', sm: 'auto' }
-        }}
+    <div className="relative flex w-full max-w-2xl gap-2">
+      <div className="relative flex-1">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Search for a city..."
+          className="w-full bg-slate-900 border border-slate-800 text-white pl-10 pr-4 py-3 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+        />
+      </div>
+      <button 
+        onClick={handleAction}
+        className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-medium transition-all shadow-lg shadow-blue-900/20"
       >
-        Search
-      </Button>
-    </Box>
+        <Plus size={20} />
+        <span className="hidden sm:inline">Add City</span>
+      </button>
+    </div>
   );
 }
